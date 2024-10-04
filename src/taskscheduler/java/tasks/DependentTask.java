@@ -91,7 +91,7 @@ public class DependentTask extends PriorityTask implements Serializable {
     }
 
 
-    private void simulateTaskExecution() {
+    public void simulateTaskExecution() {
         logger.log(Level.INFO, "Task execution started.");
 
         // Introduce a random failure with 50% chance before task execution

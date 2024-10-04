@@ -20,6 +20,8 @@ public class PriorityTask extends SimpleTask {
 
     @Override
     public String toString() {
-        return  this.getId() + "; Duration is  " + this.getEstimatedDuration().getDuration().toString() + " ; Priority is " + this.getPriority() + "; is completed " + this.isCompleted();
+        return this.getId() + "; Duration is " + this.getEstimatedDuration().getDuration().toString()
+                + " ; Priority is " + this.getPriority() + "; is completed " + this.isCompleted();
     }
+
 }

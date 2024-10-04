@@ -1,7 +1,6 @@
 package taskscheduler.java;
 
 import taskscheduler.java.exceptions.ServerException;
-import taskscheduler.java.other.PerformanceMonitor;
 import taskscheduler.java.servers.Server;
 import taskscheduler.java.tasks.Task;
 
@@ -52,10 +51,6 @@ public class TaskScheduler {
                 // Execute tasks on each server and collect the results
                 List<Task> completedTasks = server.executeTasks();
                 results.put(server, completedTasks);
-
-                // Log server performance (optional)
-                PerformanceMonitor performanceMonitor = new PerformanceMonitor(server);
-                performanceMonitor.printStatistics();
 
             } catch (ServerException e) {
                 throw new ServerException("Failed executing server tasks.", e);

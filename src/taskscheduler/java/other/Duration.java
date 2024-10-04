@@ -1,6 +1,7 @@
 package taskscheduler.java.other;
 
 import java.math.BigInteger;
+import java.util.Objects;
 
 public class Duration {
     private BigInteger duration;  // Stores duration in a numeric format that can handle large values
@@ -47,5 +48,19 @@ public class Duration {
     public static Duration ofMillis(long millis) {
         return new Duration(BigInteger.valueOf(millis));
     }
-}
 
+    // Override equals method to compare durations based on value
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Duration duration1 = (Duration) o;
+        return Objects.equals(duration, duration1.duration);
+    }
+
+    // Override hashCode method to generate hash based on duration value
+    @Override
+    public int hashCode() {
+        return Objects.hash(duration);
+    }
+}

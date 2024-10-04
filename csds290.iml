@@ -27,7 +27,11 @@
           <root url="jar://$MODULE_DIR$/lib/apiguardian-api-1.1.2.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/junit-jupiter-params-5.8.1.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/junit-jupiter-engine-5.8.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/mockito-core-3.12.4.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/junit-platform-engine-1.8.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/byte-buddy-1.10.22.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/byte-buddy-agent-1.10.22.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/objenesis-3.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

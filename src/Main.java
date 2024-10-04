@@ -2,6 +2,7 @@ import taskscheduler.java.*;
 import taskscheduler.java.exceptions.SchedulerException;
 import taskscheduler.java.exceptions.ServerException;
 import taskscheduler.java.exceptions.TaskException;
+import taskscheduler.java.other.AlertSystem;
 import taskscheduler.java.other.Duration;
 import taskscheduler.java.other.RetryPolicy;
 import taskscheduler.java.servers.RemoteServer;

@@ -1,5 +1,7 @@
 package taskscheduler.java.servers;
 
+import taskscheduler.java.other.AlertSystem;
+import taskscheduler.java.other.PerformanceMonitor;
 import taskscheduler.java.other.RetryPolicy;
 import taskscheduler.java.exceptions.SchedulerFullException;
 import taskscheduler.java.exceptions.ServerException;
@@ -23,6 +25,7 @@ public class Server {
     private BigInteger remainingCapacity = DEFAULT_MAX_CAPACITY;
 
     private final RetryPolicy retryPolicy;  // Retry policy for tasks
+    private final PerformanceMonitor performanceMonitor;  // Performance monitor for this server
 
     // PriorityQueue to hold tasks, ordered by their priority (HIGH -> MEDIUM -> LOW)
     private final PriorityBlockingQueue<Task> tasks = new PriorityBlockingQueue<>(
@@ -38,9 +41,11 @@ public class Server {
 
     public Server(RetryPolicy retryPolicy) {
         this.retryPolicy = retryPolicy;  // Set retry policy
+        // Alert system for triggering alerts
+        this.performanceMonitor = new PerformanceMonitor(this, new AlertSystem());  // Initialize the performance monitor
     }
 
-    // Method to add a task to the server's task list
+    // Method to add a task to the server's task list with monitoring
     public void addTask(Task task) throws ServerException {
         Objects.requireNonNull(task, "Task cannot be null");
 
@@ -51,12 +56,23 @@ public class Server {
         tasks.add(task);  // Safely adds the non-null task
         remainingCapacity = remainingCapacity.subtract(task.getEstimatedDuration().getDuration());
         logger.log(Level.INFO, "Task {0} added to server. Remaining capacity: {1}", new Object[]{task.getId(), remainingCapacity});
+
+        // Trigger monitoring and alerting after the task is added
+        monitorAndAlert();
     }
 
+    // Method to monitor the server and trigger alerts
+    private void monitorAndAlert() {
+        // Trigger the performance monitor, which checks various metrics and triggers alerts if needed
+        performanceMonitor.monitorAndAlert();
+    }
+
+    // Retrieve the remaining capacity of the server
     public BigInteger getRemainingCapacity() {
-        return new BigInteger(remainingCapacity.toString());
+        return new BigInteger(remainingCapacity.toString());  // Return a defensive copy of remaining capacity
     }
 
+    // Set the remaining capacity of the server
     public void setRemainingCapacity(BigInteger remainingCapacity) {
         this.remainingCapacity = remainingCapacity;
     }
@@ -74,7 +90,7 @@ public class Server {
         return true;
     }
 
-    // Method to execute a task with retries
+    // Method to execute a task with retries and monitoring
     private boolean executeTaskWithRetries(Task task) {
         int attempts = 0;
         boolean taskCompleted = false;
@@ -105,10 +121,13 @@ public class Server {
             }
         }
 
+        // After task execution, monitor and alert
+        monitorAndAlert();
+
         return taskCompleted;
     }
 
-    // Executes all tasks in the queue, returns a list of successfully completed tasks
+    // Executes all tasks in the queue, returns a list of successfully completed tasks with monitoring
     public List<Task> executeTasks() throws ServerException {
         List<Task> completedTasksThisSession = new ArrayList<>();  // List to store successfully completed tasks in this session
         List<Task> failedTasksThisSession = new ArrayList<>();  // Local list to track failed tasks within this execution session
@@ -131,6 +150,10 @@ public class Server {
         this.failedTasks.addAll(failedTasksThisSession);  // Add failed tasks to the server-level failed tasks list
         this.completedTasks.addAll(completedTasksThisSession);  // Add completed tasks to the server's completed task list
         logger.log(Level.INFO, "{0} tasks completed, {1} tasks failed.", new Object[]{completedTasksThisSession.size(), failedTasksThisSession.size()});
+
+        // After task execution, monitor and alert
+        monitorAndAlert();
+
         return completedTasksThisSession;  // Return the list of successfully completed tasks in this session
     }
 
